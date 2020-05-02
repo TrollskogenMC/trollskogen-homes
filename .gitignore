@@ -2,3 +2,4 @@ target
 .idea
 server/*
 !server/.gitkeep
+trollskogen-homes-*.jar
