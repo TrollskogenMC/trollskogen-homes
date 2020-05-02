@@ -1,0 +1,19 @@
+name: trollskogen-homes
+main: com.github.hornta.trollskogen_homes.TrollskogenHomesPlugin
+depend:
+  - trollskogen-core
+  - sassy-spawn
+  - LuckPerms
+version: ${project.version}
+author: hornta
+api-version: 1.13
+commands:
+  home:
+  sethome:
+  delhome:
+  openhome:
+  closehome:
+  homes:
+  togglehomecmds:
+  ahome:
+  phome:
