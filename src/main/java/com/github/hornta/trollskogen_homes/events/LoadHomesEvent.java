@@ -5,7 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class LoadHomesEvent extends Event {
-  private HomeManager homeManager;
+  private final HomeManager homeManager;
   private static final HandlerList HANDLERS = new HandlerList();
 
   public LoadHomesEvent(HomeManager homeManager) {

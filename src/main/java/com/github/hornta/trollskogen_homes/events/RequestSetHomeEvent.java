@@ -7,9 +7,9 @@ import org.bukkit.event.HandlerList;
 
 public class RequestSetHomeEvent extends Event {
   private static final HandlerList HANDLERS = new HandlerList();
-  private String name;
-  private Location location;
-  private UserObject user;
+  private final String name;
+  private final Location location;
+  private final UserObject user;
 
   public RequestSetHomeEvent(String name, Location location, UserObject user) {
     this.name = name;

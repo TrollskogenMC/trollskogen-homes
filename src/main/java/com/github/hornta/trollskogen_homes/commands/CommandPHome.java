@@ -48,12 +48,6 @@ public class CommandPHome implements ICommandHandler, Listener {
   public void handle(CommandSender sender, String[] args, int typedArgs) {
     UserObject user = TrollskogenCorePlugin.getUser(args[0]);
     Home home = TrollskogenHomesPlugin.getInstance().getHomeManager().getHome(args[1], user.getId());
-
-    UserObject currentUser = TrollskogenCorePlugin.getUser((Player) sender);
-    if(currentUser == user) {
-      return;
-    }
-
     Player player = (Player) sender;
     immortals.put(player.getUniqueId(), System.currentTimeMillis() + 5000);
     immortalsHomeOwner.put(player.getUniqueId(), user.getName());

@@ -11,7 +11,6 @@ import com.github.hornta.messenger.Translations;
 import com.github.hornta.sassy_spawn.SassySpawnPlugin;
 import com.github.hornta.trollskogen_core.TrollskogenCorePlugin;
 import com.github.hornta.trollskogen_core.users.UserObject;
-import com.github.hornta.trollskogen_core.users.events.LoadUsersEvent;
 import com.github.hornta.trollskogen_homes.commands.*;
 import com.github.hornta.trollskogen_homes.commands.argumentHandlers.HomeArgumentHandler;
 import com.github.hornta.trollskogen_homes.commands.argumentHandlers.OpenHomePlayersArgumentHandler;

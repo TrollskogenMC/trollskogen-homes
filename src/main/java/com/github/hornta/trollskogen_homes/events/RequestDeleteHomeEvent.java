@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class RequestDeleteHomeEvent extends Event {
   private static final HandlerList HANDLERS = new HandlerList();
-  private Home home;
+  private final Home home;
 
   public RequestDeleteHomeEvent(Home home) {
     this.home = home;

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 public class HomeManager implements Listener {
@@ -112,7 +113,10 @@ public class HomeManager implements Listener {
     json.addProperty("x", event.getLocation().getX());
     json.addProperty("y", event.getLocation().getY());
     json.addProperty("z", event.getLocation().getZ());
-    patchHome(existing, json);
+    patchHome(existing, json, (Home home) -> {
+      SetHomeEvent e = new SetHomeEvent(home);
+      Bukkit.getPluginManager().callEvent(e);
+    });
   }
 
   @EventHandler
@@ -131,14 +135,20 @@ public class HomeManager implements Listener {
   void onRequestCloseHome(RequestCloseHomeEvent event) {
     JsonObject json = generateHomeJson(event.getHome());
     json.addProperty("is_open", false);
-    patchHome(event.getHome(), json);
+    patchHome(event.getHome(), json, (Home home) -> {
+      CloseHomeEvent e = new CloseHomeEvent(home);
+      Bukkit.getPluginManager().callEvent(e);
+    });
   }
 
   @EventHandler
   void onRequestOpenHome(RequestOpenHomeEvent event) {
     JsonObject json = generateHomeJson(event.getHome());
     json.addProperty("is_open", true);
-    patchHome(event.getHome(), json);
+    patchHome(event.getHome(), json, (Home home) -> {
+      OpenHomeEvent e = new OpenHomeEvent(home);
+      Bukkit.getPluginManager().callEvent(e);
+    });
   }
 
   @EventHandler
@@ -184,6 +194,10 @@ public class HomeManager implements Listener {
   }
 
   private void patchHome(Home home, JsonObject json) {
+    patchHome(home, json, null);
+  }
+
+  private void patchHome(Home home, JsonObject json, Consumer<Home> callback) {
     scheduledExecutor.submit(() -> {
       TrollskogenCorePlugin.request("PATCH", "/home/" + home.getId(), json, (Response response) -> {
         Gson gson = new GsonBuilder()
@@ -203,8 +217,9 @@ public class HomeManager implements Listener {
           home.setPublic(parsedHome.isPublic());
           tree = tree.delete(home, prevGeometry);
           tree = tree.add(home, home.getGeometry());
-          SetHomeEvent event = new SetHomeEvent(home);
-          Bukkit.getPluginManager().callEvent(event);
+          if(callback != null) {
+            callback.accept(home);
+          }
           return null;
         });
       });

@@ -52,10 +52,7 @@ public class OpenHomePlayersArgumentHandler implements IArgumentHandler, Listene
 
   @Override
   public Set<String> getItems(CommandSender sender, String argument, String[] prevArgs) {
-    return allUsernames.find(argument).stream().filter((String username) -> {
-      UserObject user = TrollskogenCorePlugin.getUser((Player) sender);
-      return !username.equals(user.getName());
-    }).collect(Collectors.toCollection(LinkedHashSet::new));
+    return new LinkedHashSet<>(allUsernames.find(argument));
   }
 
   @Override

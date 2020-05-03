@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class RequestToggleCommandsEvent extends Event {
   private static final HandlerList HANDLERS = new HandlerList();
-  private Home home;
+  private final Home home;
 
   public RequestToggleCommandsEvent(Home home) {
     this.home = home;
