@@ -6,6 +6,7 @@ import com.github.hornta.commando.Commando;
 import com.github.hornta.commando.ICarbonArgument;
 import com.github.hornta.messenger.MessageManager;
 import com.github.hornta.messenger.MessagesBuilder;
+import com.github.hornta.messenger.MessengerException;
 import com.github.hornta.messenger.Translation;
 import com.github.hornta.messenger.Translations;
 import com.github.hornta.sassy_spawn.SassySpawnPlugin;
@@ -16,9 +17,12 @@ import com.github.hornta.trollskogen_homes.commands.argumentHandlers.HomeArgumen
 import com.github.hornta.trollskogen_homes.commands.argumentHandlers.OpenHomePlayersArgumentHandler;
 import com.github.hornta.trollskogen_homes.commands.argumentHandlers.PlayerHomeArgumentHandler;
 import com.github.hornta.trollskogen_homes.commands.argumentHandlers.PlayerOpenHomeArgumentHandler;
-import com.github.hornta.trollskogen_homes.config.InitialVersion;
 import com.github.hornta.versioned_config.Configuration;
 import com.github.hornta.versioned_config.ConfigurationBuilder;
+import com.github.hornta.versioned_config.ConfigurationException;
+import com.github.hornta.versioned_config.Migration;
+import com.github.hornta.versioned_config.Patch;
+import com.github.hornta.versioned_config.Type;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
@@ -31,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -50,9 +55,19 @@ public final class TrollskogenHomesPlugin extends JavaPlugin {
     TrollskogenCorePlugin.getServerReady().waitFor(this);
 
     File cfgFile = new File(getDataFolder(), "config.yml");
-    ConfigurationBuilder<ConfigKey> cb = new ConfigurationBuilder<>(this, cfgFile);
-    cb.addVersion(new InitialVersion());
-    configuration = cb.run();
+    ConfigurationBuilder<ConfigKey> cb = new ConfigurationBuilder<>(cfgFile);
+    cb.addMigration(new Migration<>(1, () -> {
+      Patch<ConfigKey> patch = new Patch<>();
+      patch.set(ConfigKey.LANGUAGE, "language", "swedish", Type.STRING);
+      return patch;
+    }));
+    try {
+      configuration = cb.create();
+    } catch (ConfigurationException e) {
+      getLogger().log(Level.SEVERE, "Failed to load configuration. Reason: " + e.getMessage(), e);
+      setEnabled(false);
+      return;
+    }
 
     MessageManager messageManager = new MessagesBuilder()
       .add(MessageKey.NO_PERMISSION_COMMAND, "no_permission_command")
@@ -87,7 +102,13 @@ public final class TrollskogenHomesPlugin extends JavaPlugin {
       .build();
 
     translations = new Translations(this, messageManager);
-    Translation translation = translations.createTranslation(configuration.get(ConfigKey.LANGUAGE));
+    Translation translation;
+    try {
+      translation = translations.createTranslation(configuration.get(ConfigKey.LANGUAGE));
+    } catch (MessengerException e) {
+      getLogger().log(Level.SEVERE, "Failed to load translations. Reason: " + e.getMessage(), e);
+      return;
+    }
     messageManager.setTranslation(translation);
 
     setupCommands();
