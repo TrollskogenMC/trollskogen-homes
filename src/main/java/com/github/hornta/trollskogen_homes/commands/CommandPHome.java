@@ -78,6 +78,10 @@ public class CommandPHome implements ICommandHandler, Listener {
       return;
     }
 
+    if(home.isAllowCommands()) {
+      return;
+    }
+
     UserObject owner = TrollskogenCorePlugin.getUser(home.getOwner());
 
     MessageManager.setValue("player_name", owner.getName());
