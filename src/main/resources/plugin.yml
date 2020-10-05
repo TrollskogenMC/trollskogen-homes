@@ -4,6 +4,8 @@ depend:
   - trollskogen-core
   - sassy-spawn
   - LuckPerms
+softdepend:
+  - dynmap
 version: ${project.version}
 author: hornta
 api-version: 1.13

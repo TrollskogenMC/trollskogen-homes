@@ -47,6 +47,7 @@ public final class TrollskogenHomesPlugin extends JavaPlugin {
   private HomeManager homeManager;
   private LuckPerms luckPerms;
   private Translations translations;
+  private DynmapIntegration dynmapIntegration;
 
   @Override
   public void onEnable() {
@@ -118,7 +119,15 @@ public final class TrollskogenHomesPlugin extends JavaPlugin {
       sassySpawn = (SassySpawnPlugin) getServer().getPluginManager().getPlugin("SassySpawn");
     }
 
+    dynmapIntegration = new DynmapIntegration(this);
+
+    getServer().getPluginManager().registerEvents(dynmapIntegration, this);
     getServer().getPluginManager().registerEvents(homeManager, this);
+  }
+
+  @Override
+  public void onDisable() {
+    dynmapIntegration.dispose();
   }
 
   private void setupCommands() {

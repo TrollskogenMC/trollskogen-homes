@@ -75,6 +75,10 @@ public class HomeManager implements Listener {
     return userToHomes.getOrDefault(userId, Collections.emptyList());
   }
 
+  public List<Home> getHomes() {
+    return homes;
+  }
+
   public boolean hasOpenHomes(UserObject user) {
     if(!userToHomes.containsKey(user.getId())) {
       return false;
