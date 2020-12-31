@@ -7,8 +7,6 @@ import com.github.hornta.trollskogen_homes.events.DeleteHomeEvent;
 import com.github.hornta.trollskogen_homes.events.LoadHomesEvent;
 import com.github.hornta.trollskogen_homes.events.OpenHomeEvent;
 import com.github.hornta.trollskogen_homes.events.SetHomeEvent;
-import net.luckperms.api.model.user.User;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -28,12 +26,14 @@ public class DynmapIntegration implements Listener {
   private final Map<Home, Marker> homeMarkers;
   private static final String MARKER_SET_ID = "trollskogen_homes";
   private static final String MARKER_SET_LABEL = "Homes";
+  private final boolean isLoaded;
 
   DynmapIntegration(JavaPlugin plugin) {
     homeMarkers = new HashMap<>();
 
     Plugin dynmapPlugin = plugin.getServer().getPluginManager().getPlugin("dynmap");
     if(dynmapPlugin == null || !dynmapPlugin.isEnabled()) {
+      isLoaded = false;
       return;
     }
 
@@ -41,8 +41,11 @@ public class DynmapIntegration implements Listener {
 
     MarkerAPI markerApi = api.getMarkerAPI();
     if(markerApi == null) {
+      isLoaded = false;
       return;
     }
+
+    isLoaded = true;
 
     markerSet = markerApi.getMarkerSet(MARKER_SET_ID);
     if(markerSet == null) {
@@ -66,6 +69,10 @@ public class DynmapIntegration implements Listener {
   }
 
   private void updateHomeMarker(Home home) {
+    if(!isLoaded) {
+      return;
+    }
+
     if(!home.isPublic()) {
       return;
     }
@@ -98,6 +105,10 @@ public class DynmapIntegration implements Listener {
   }
 
   private void deleteHomeMarker(Home home) {
+    if(!isLoaded) {
+      return;
+    }
+
     Marker homeMarker = homeMarkers.get(home);
     if(homeMarker != null) {
       homeMarker.deleteMarker();

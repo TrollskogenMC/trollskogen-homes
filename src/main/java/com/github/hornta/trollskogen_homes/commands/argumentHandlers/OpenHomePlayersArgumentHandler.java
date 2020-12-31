@@ -12,13 +12,11 @@ import com.github.hornta.trollskogen_homes.events.CloseHomeEvent;
 import com.github.hornta.trollskogen_homes.events.LoadHomesEvent;
 import com.github.hornta.trollskogen_homes.events.OpenHomeEvent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OpenHomePlayersArgumentHandler implements IArgumentHandler, Listener {
   private final PrefixMatcher allUsernames;
@@ -29,7 +27,7 @@ public class OpenHomePlayersArgumentHandler implements IArgumentHandler, Listene
 
   @EventHandler
   void onLoadHomes(LoadHomesEvent event) {
-    for(UserObject user : TrollskogenCorePlugin.getInstance().getUserManager().getUsers()) {
+    for(UserObject user : TrollskogenCorePlugin.getUserManager().getUsers()) {
       if(TrollskogenHomesPlugin.getInstance().getHomeManager().hasOpenHomes(user)) {
         allUsernames.insert(user.getName());
       }
